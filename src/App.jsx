@@ -1,24 +1,28 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 
 /*
  * Temporary problems array schema
  */
 const problems = [{
-    title: "201. Bitwise AND of Numbers Range",
+    index: "201",
+    title: "Bitwise AND of Numbers Range",
     difficulty: "Medium",
     acceptance: "42%"
 }, {
-    title: "201. Bitwise AND of Numbers Range",
+    index: "202",
+    title: "Palindrome",
     difficulty: "Medium",
-    acceptance: "412%"
+    acceptance: "41%"
 },
 {
-    title: "202. Happy Number",
+    index: "203",
+    title: "Happy Number",
     difficulty: "Easy",
     acceptance: "54.9%"
 },
 {
-    title: "203. Remove Linked List Elements",
+    index: "204",
+    title: "Remove Linked List Elements",
     difficulty: "Hard",
     acceptance: "42%"
 }];
@@ -44,6 +48,8 @@ function App() {
                 <Route path="/" Component={Home} />
                 <Route path="/login" Component={Login} />
                 <Route path="/signup" Component={Signup} />
+                <Route path="/problemset/all" Component={AllProblem} />
+                <Route path="/problem/:index" Component={SingleProblem} />
             </Routes>
         </BrowserRouter>
     )
@@ -55,25 +61,76 @@ function Home() {
         <>
             <h1>Home</h1>
             <button><a href="/login">LOGIN</a></button>
-            <button><a href="/signup">LOGIN</a></button>
+            <button><a href="/signup">SIGNUP</a></button>
         </>
-    );
-};
+    )
+}
 
 //login component
 function Login() {
     return (
-        <h1>Login</h1>
+        <>
+            <h1>Login</h1>
+            <form action="/problemset/all">
+                <label>Username</label>
+                <input id="username"></input><br />
+                <label>Password</label>
+                <input id="password"></input><br />
+                <button type="submit">Submit</button>
+            </form>
+        </>
     )
 }
 
 //signup component
 function Signup() {
     return (
-        <h1>Signup</h1>
+        <>
+            <h1>Signup</h1>
+            <form>
+                <label>New Username :</label>
+                <input id="username"></input><br />
+                <label>New Password :</label>
+                <input id="password"></input><br />
+                <button type="submit">Submit</button>
+            </form>
+        </>
     )
 }
 
+//all problem set
+function AllProblem() {
+    return (
+        <table>
+            {problems.map(problem => (
+                <ProblemStatement title={problem.title}
+                    acceptance={problem.acceptance}
+                    difficulty={problem.difficulty} />
+            ))}
+        </table>
+    )
+}
+
+//slug component
+function SingleProblem() {
+    let { index } = useParams();
+    let problem_statement = problems.find(problem => (problem.index == index));
+    if (problem_statement) {
+        return (
+            <table>
+                <ProblemStatement index={problem_statement.index}
+                    title={problem_statement.title}
+                    acceptance={problem_statement.acceptance}
+                    difficulty={problem_statement.difficulty} />
+            </table>
+        )
+    }
+    else {
+        return (
+            <h1>NOT VALID INDEX</h1>
+        )
+    }
+}
 
 // A demo component
 function ProblemStatement(props) {
