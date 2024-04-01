@@ -49,7 +49,7 @@ function App() {
                 <Route path="/login" Component={Login} />
                 <Route path="/signup" Component={Signup} />
                 <Route path="/problemset/all" Component={AllProblem} />
-                <Route path="/problem/:index" Component={SingleProblem} />
+                <Route path="/problem/:index" Component={ProblemPage} />
             </Routes>
         </BrowserRouter>
     )
@@ -103,7 +103,7 @@ function AllProblem() {
     return (
         <table>
             {problems.map(problem => (
-                <ProblemStatement title={problem.title}
+                <ProblemStatement page="all" index={problem.index} title={problem.title}
                     acceptance={problem.acceptance}
                     difficulty={problem.difficulty} />
             ))}
@@ -112,17 +112,15 @@ function AllProblem() {
 }
 
 //slug component
-function SingleProblem() {
+function ProblemPage() {
     let { index } = useParams();
     let problem_statement = problems.find(problem => (problem.index == index));
     if (problem_statement) {
         return (
-            <table>
-                <ProblemStatement index={problem_statement.index}
-                    title={problem_statement.title}
-                    acceptance={problem_statement.acceptance}
-                    difficulty={problem_statement.difficulty} />
-            </table>
+            <ProblemStatement page="single" index={problem_statement.index}
+                title={problem_statement.title}
+                acceptance={problem_statement.acceptance}
+                difficulty={problem_statement.difficulty} />
         )
     }
     else {
@@ -134,20 +132,36 @@ function SingleProblem() {
 
 // A demo component
 function ProblemStatement(props) {
+    const page = props.page;
+    const index = props.index;
     const title = props.title;
     const acceptance = props.acceptance;
     const difficulty = props.difficulty;
-
-    return <tr>
-        <td>
-            {title}
-        </td>
-        <td>
-            {acceptance}
-        </td>
-        <td>
-            {difficulty}
-        </td>
-    </tr>
+    if (page == "all") {
+        return <tr>
+            <td>
+                {index}
+            </td>
+            <td>
+                {title}
+            </td>
+            <td>
+                {acceptance}
+            </td>
+            <td>
+                {difficulty}
+            </td>
+        </tr>
+    } else {
+        return (
+            <div class="problem single">
+                <h2>{index} : {title}</h2>
+                <ul>
+                    <li>Acceptance : {acceptance}</li>
+                    <li>Difficulty : {difficulty}</li>
+                </ul>
+            </div>
+        )
+    }
 }
 export default App
