@@ -206,44 +206,47 @@ function SingleProblem() {
 
 //seperate page for a problem
 function ProblemPage(props) {
+
     const index = props.index;
     const title = props.title;
     const description = props.description;
     const input = props.input;
     const output = props.output;
 
-    const [language, setLanguage] = useState("");
-    console.log("curr-val", language);
-    const handleChange = (e) => {
+    // const [language, setLanguage] = useState("java");
+    // console.log("curr-val", language);
+
+    const handleLanguageChange = (e) => {
         console.log("selected-value", e.target.value);
-        setLanguage(e.target.value);
-        console.log("changed-val", language);
+        setCodeChange(defaultCode[e.target.value]);
     }
 
-    // const onCodeTyping = e => {
-    //     console.log(e.target.value);
-    //     defaultCode[language] = e.target.value;
-    // }
+    const [code, setCodeChange] = useState(defaultCode["java"]);
+    const handleCodeChange = e => {
+        // console.log(e.target.value);
+        setCodeChange(e.target.value);
+    }
 
-
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("submmited code", e.target.elements.code.value);
+    }
 
     return (
         <div className="page-container">
             <h1>{index} : {title}</h1>
             <p>{description}</p>
             <p>{input}</p>
-            {/* {console.log("outside testing: ", "hii")} */}
             <p>{output}</p>
             <div className="code-editor">
-                <form action="" >
-                    <label>Choose your language {language} :</label>
-                    <select name="language" id="language" value={language} onChange={handleChange}>
-                        <option value="">None</option>
+                <form onSubmit={handleSubmit} >
+                    <label>Choose your language : </label>
+                    <select name="language" id="language" onChange={handleLanguageChange}>
                         <option value="java">java</option>
                         <option value="python">python</option>
                         <option value="c++">c++</option>
                     </select><br />
-                    <textarea defaultValue={defaultCode[language]}></textarea><br />
+                    <textarea name="code" value={code} onChange={handleCodeChange}></textarea><br />
                     <button type="submit">Submit</button>
                 </form>
             </div>
