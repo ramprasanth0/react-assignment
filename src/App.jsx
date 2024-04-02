@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
  */
 const problems1 = [{
     index: "201",
-    title: "Bitwise AND of Numbers Range",
+    title: "Bitwise And of Numbers Range",
     difficulty: "Medium",
     acceptance: "42%"
 }, {
@@ -51,6 +51,37 @@ const problems2 = [{
     acceptance: "42%"
 }];
 
+const problemDetail = [
+    {
+        index: "201",
+        title: "Bitwise AND of Numbers Range",
+        description: "asdhfsdfjksdhfjshdf",
+        input: "5,2,3",
+        output: "5,2,2"
+    }, {
+        index: "202",
+        title: "Palindrome",
+        description: "check if the given string is palindrome",
+        input: "ababa",
+        output: "True"
+    }
+]
+
+const defaultCode = {
+    "java": `class Solution {
+        public int[] twoSum(int[] nums, int target) {
+            
+        }
+    }`,
+    "python": `class Solution(object):
+    def twoSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[int]
+        """
+        `
+}
 function App() {
     return (
 
@@ -72,7 +103,7 @@ function App() {
                 <Route path="/login" Component={Login} />
                 <Route path="/signup" Component={Signup} />
                 <Route path="/problemset/all" Component={AllProblems} />
-                <Route path="/problem/:index" Component={ProblemPage} />
+                <Route path="/problem/:index" Component={SingleProblem} />
             </Routes>
         </BrowserRouter>
     )
@@ -123,16 +154,26 @@ function Signup() {
 
 //all problem set
 function AllProblems() {
-    const [page, setPage] = useState([])
+    const [page, setPage] = useState(problems1)
 
     return (
         <>
             <table>
-                {page.map(problem => (
-                    <ProblemStatement page="all" index={problem.index} title={problem.title}
-                        acceptance={problem.acceptance}
-                        difficulty={problem.difficulty} />
-                ))}
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Title</th>
+                        <th>Acceptance</th>
+                        <th>Difficulty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {page.map(problem => (
+                        <ProblemStatement page="all" key={problem.index} index={problem.index} title={problem.title}
+                            acceptance={problem.acceptance}
+                            difficulty={problem.difficulty} />
+                    ))}
+                </tbody>
             </table>
             <button onClick={() => { setPage(page => problems1) }}>1</button>
             <button onClick={() => { setPage(page => problems2) }}>2</button>
@@ -141,17 +182,19 @@ function AllProblems() {
 }
 
 //slug component
-function ProblemPage() {
+function SingleProblem() {
     const [problemSlug, setProblemSlug] = useState("")
     let { index } = useParams();
     useEffect(() => setProblemSlug(problemSlug => index), [])
-    let problem_statement = problems1.find(problem => (problem.index == problemSlug));
-    if (problem_statement) {
+    let problem_details = problemDetail.find(problem => (problem.index == problemSlug));
+    if (problem_details) {
         return (
-            <ProblemStatement page="single" index={problem_statement.index}
-                title={problem_statement.title}
-                acceptance={problem_statement.acceptance}
-                difficulty={problem_statement.difficulty} />
+            <ProblemPage index={problem_details.index}
+                title={problem_details.title}
+                description={problem_details.description}
+                input={problem_details.input}
+                output={problem_details.output}
+            />
         )
     }
     else {
@@ -161,38 +204,74 @@ function ProblemPage() {
     }
 }
 
-// A demo component
+//seperate page for a problem
+function ProblemPage(props) {
+    const index = props.index;
+    const title = props.title;
+    const description = props.description;
+    const input = props.input;
+    const output = props.output;
+
+    const [language, setLanguage] = useState("");
+    console.log("curr-val", language);
+    const handleChange = (e) => {
+        console.log("selected-value", e.target.value);
+        setLanguage(e.target.value);
+        console.log("changed-val", language);
+    }
+
+    // const onCodeTyping = e => {
+    //     console.log(e.target.value);
+    //     defaultCode[language] = e.target.value;
+    // }
+
+
+
+    return (
+        <div className="page-container">
+            <h1>{index} : {title}</h1>
+            <p>{description}</p>
+            <p>{input}</p>
+            {/* {console.log("outside testing: ", "hii")} */}
+            <p>{output}</p>
+            <div className="code-editor">
+                <form action="" >
+                    <label>Choose your language {language} :</label>
+                    <select name="language" id="language" value={language} onChange={handleChange}>
+                        <option value="">None</option>
+                        <option value="java">java</option>
+                        <option value="python">python</option>
+                        <option value="c++">c++</option>
+                    </select><br />
+                    <textarea defaultValue={defaultCode[language]}></textarea><br />
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+
+// A demo component(summary component)
 function ProblemStatement(props) {
     const page = props.page;
     const index = props.index;
     const title = props.title;
     const acceptance = props.acceptance;
     const difficulty = props.difficulty;
-    if (page == "all") {
-        return <tr>
+    console.log(index)
+
+    return (
+        <tr>
+            <td>{index}</td>
             <td>
-                {index}
+                <a href={`/problem/${index}`} style={{ textDecoration: "None" }}>
+                    {title}
+                </a>
             </td>
-            <td>
-                {title}
-            </td>
-            <td>
-                {acceptance}
-            </td>
-            <td>
-                {difficulty}
-            </td>
+            <td>{acceptance}</td>
+            <td>{difficulty}</td>
         </tr>
-    } else {
-        return (
-            <div className="problem single">
-                <h2>{index} : {title}</h2>
-                <ul>
-                    <li>Acceptance : {acceptance}</li>
-                    <li>Difficulty : {difficulty}</li>
-                </ul>
-            </div>
-        )
-    }
+    );
 }
 export default App
