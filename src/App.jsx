@@ -1,9 +1,10 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 
 /*
  * Temporary problems array schema
  */
-const problems = [{
+const problems1 = [{
     index: "201",
     title: "Bitwise AND of Numbers Range",
     difficulty: "Medium",
@@ -26,7 +27,29 @@ const problems = [{
     difficulty: "Hard",
     acceptance: "42%"
 }];
-
+const problems2 = [{
+    index: "205",
+    title: "Numbers Range",
+    difficulty: "Medium",
+    acceptance: "42%"
+}, {
+    index: "206",
+    title: "Reverse Array",
+    difficulty: "Easy",
+    acceptance: "41%"
+},
+{
+    index: "207",
+    title: "Sad Number",
+    difficulty: "Easy",
+    acceptance: "54.9%"
+},
+{
+    index: "208",
+    title: "Remove Duplicate Elements",
+    difficulty: "Easy",
+    acceptance: "42%"
+}];
 
 function App() {
     return (
@@ -48,7 +71,7 @@ function App() {
                 <Route path="/" Component={Home} />
                 <Route path="/login" Component={Login} />
                 <Route path="/signup" Component={Signup} />
-                <Route path="/problemset/all" Component={AllProblem} />
+                <Route path="/problemset/all" Component={AllProblems} />
                 <Route path="/problem/:index" Component={ProblemPage} />
             </Routes>
         </BrowserRouter>
@@ -99,22 +122,30 @@ function Signup() {
 }
 
 //all problem set
-function AllProblem() {
+function AllProblems() {
+    const [page, setPage] = useState([])
+
     return (
-        <table>
-            {problems.map(problem => (
-                <ProblemStatement page="all" index={problem.index} title={problem.title}
-                    acceptance={problem.acceptance}
-                    difficulty={problem.difficulty} />
-            ))}
-        </table>
+        <>
+            <table>
+                {page.map(problem => (
+                    <ProblemStatement page="all" index={problem.index} title={problem.title}
+                        acceptance={problem.acceptance}
+                        difficulty={problem.difficulty} />
+                ))}
+            </table>
+            <button onClick={() => { setPage(page => problems1) }}>1</button>
+            <button onClick={() => { setPage(page => problems2) }}>2</button>
+        </>
     )
 }
 
 //slug component
 function ProblemPage() {
+    const [problemSlug, setProblemSlug] = useState("")
     let { index } = useParams();
-    let problem_statement = problems.find(problem => (problem.index == index));
+    useEffect(() => setProblemSlug(problemSlug => index), [])
+    let problem_statement = problems1.find(problem => (problem.index == problemSlug));
     if (problem_statement) {
         return (
             <ProblemStatement page="single" index={problem_statement.index}
@@ -154,7 +185,7 @@ function ProblemStatement(props) {
         </tr>
     } else {
         return (
-            <div class="problem single">
+            <div className="problem single">
                 <h2>{index} : {title}</h2>
                 <ul>
                     <li>Acceptance : {acceptance}</li>
