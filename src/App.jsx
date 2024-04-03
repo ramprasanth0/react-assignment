@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
-
+import './assets/custom.css'
 /*
  * Temporary problems array schema
  */
 const problems1 = [{
     index: "201",
-    title: "Bitwise And of Numbers Range",
-    difficulty: "Medium",
+    title: "Two Sum",
+    difficulty: "Easy",
     acceptance: "42%"
 }, {
     index: "202",
-    title: "Palindrome",
-    difficulty: "Medium",
+    title: "Palindrome Number",
+    difficulty: "Easy",
     acceptance: "41%"
 },
 {
@@ -54,16 +54,18 @@ const problems2 = [{
 const problemDetail = [
     {
         index: "201",
-        title: "Bitwise AND of Numbers Range",
-        description: "asdhfsdfjksdhfjshdf",
-        input: "5,2,3",
-        output: "5,2,2"
+        title: "Two Sum",
+        description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+        You may assume that each input would have exactly one solution, and you may not use the same element twice.
+        You can return the answer in any order.`,
+        input: `nums = [2,7,11,15], target = 9`,
+        output: `[0,1]`
     }, {
         index: "202",
-        title: "Palindrome",
-        description: "check if the given string is palindrome",
-        input: "ababa",
-        output: "True"
+        title: "Palindrome Number",
+        description: `Given an integer x, return true if x is a palindrome, and false otherwise.`,
+        input: "x = 121",
+        output: "true"
     }
 ]
 
@@ -80,7 +82,21 @@ const defaultCode = {
         :type target: int
         :rtype: List[int]
         """
-        `
+    `,
+    "c++": `class Solution {
+        public:
+            vector<int> twoSum(vector<int>& nums, int target) {
+                
+        }
+    };`,
+    "javascript": `/**
+    * @param {number[]} nums
+    * @param {number} target
+    * @return {number[]}
+    */
+   var twoSum = function(nums, target) {
+       
+   };`
 }
 function App() {
     return (
@@ -112,43 +128,51 @@ function App() {
 //home component
 function Home() {
     return (
-        <>
-            <h1>Home</h1>
-            <button><a href="/login">LOGIN</a></button>
-            <button><a href="/signup">SIGNUP</a></button>
-        </>
+        <div className="home-container">
+            <div className="home-container-items">
+                <h1>Home</h1>
+                <div className="link-container">
+                    <button><a href="/login">LOGIN</a></button>
+                    <button><a href="/signup">SIGNUP</a></button>
+                </div>
+            </div>
+        </div>
     )
 }
 
 //login component
 function Login() {
     return (
-        <>
-            <h1>Login</h1>
-            <form action="/problemset/all">
-                <label>Username</label>
-                <input id="username"></input><br />
-                <label>Password</label>
-                <input id="password"></input><br />
-                <button type="submit">Submit</button>
-            </form>
-        </>
+        <div className="login-container">
+            <div className="login-form">
+                <h1>Login</h1>
+                <form action="/problemset/all">
+                    <label>Username</label>
+                    <input id="username"></input><br />
+                    <label>Password</label>
+                    <input id="password"></input><br />
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
     )
 }
 
 //signup component
 function Signup() {
     return (
-        <>
-            <h1>Signup</h1>
-            <form>
-                <label>New Username :</label>
-                <input id="username"></input><br />
-                <label>New Password :</label>
-                <input id="password"></input><br />
-                <button type="submit">Submit</button>
-            </form>
-        </>
+        <div className="signup-container">
+            <div className="signup-form">
+                <h1>Signup</h1>
+                <form action="/login">
+                    <label>New Username :</label>
+                    <input id="username"></input><br />
+                    <label>New Password :</label>
+                    <input id="password"></input><br />
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
     )
 }
 
@@ -157,7 +181,7 @@ function AllProblems() {
     const [page, setPage] = useState(problems1)
 
     return (
-        <>
+        <div className="summary-container">
             <table>
                 <thead>
                     <tr>
@@ -175,9 +199,11 @@ function AllProblems() {
                     ))}
                 </tbody>
             </table>
-            <button onClick={() => { setPage(page => problems1) }}>1</button>
-            <button onClick={() => { setPage(page => problems2) }}>2</button>
-        </>
+            <div className="pagination">
+                <button onClick={() => { setPage(page => problems1) }}>1</button>
+                <button onClick={() => { setPage(page => problems2) }}>2</button>
+            </div>
+        </div>
     )
 }
 
@@ -234,21 +260,25 @@ function ProblemPage(props) {
 
     return (
         <div className="page-container">
-            <h1>{index} : {title}</h1>
-            <p>{description}</p>
-            <p>{input}</p>
-            <p>{output}</p>
+            <div className="desc-container">
+                <h1>{index} : {title}</h1>
+                <p>Description : {description}</p>
+                <p>Input : {input}</p>
+                <p>Output : {output}</p>
+            </div>
             <div className="code-editor">
                 <form onSubmit={handleSubmit} >
-                    <label>Choose your language : </label>
+                    <label>Choose your language :</label>
                     <select name="language" id="language" onChange={handleLanguageChange}>
-                        <option value="java">java</option>
-                        <option value="python">python</option>
-                        <option value="c++">c++</option>
+                        <option value="java">Java</option>
+                        <option value="python">Python</option>
+                        <option value="c++">C++</option>
+                        <option value="javascript">JavaScript</option>
                     </select><br />
-                    <textarea name="code" value={code} onChange={handleCodeChange}></textarea><br />
+                    <textarea name="code" value={code} onChange={handleCodeChange} rows="20" cols="70"></textarea><br />
                     <button type="submit">Submit</button>
                 </form>
+                <div style={{ color: "red" }}>Dont Change language after editing, you will lose progress</div>
             </div>
         </div>
     )
